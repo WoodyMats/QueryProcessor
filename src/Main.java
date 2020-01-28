@@ -9,35 +9,24 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.lang.reflect.Type;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashSet;
 
 
 public class Main {
     public static HashSet<TFD> documentsHashSet = new HashSet<>();
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+    public static void main(String[] args) {
         long startTime = System.nanoTime();
-        // QueryProcessor queryProcessor = new QueryProcessor(args[0]);
-        // queryProcessor.getDataDb();
-
-        getDocuments();
-
-     /*   do {
-            if (!args[0].equals("")) {
-                  double[] results = queryProcessor.CalculateResults();
-                System.out.println("Final cosine similarity ");
-                //System.out.println(Arrays.toString(results));}
-                long endTime = System.nanoTime();
-                long totalTime = endTime - startTime;
-                System.out.println("Total execution time: " + totalTime / 1000000000 + "sec.");
-            }
-        }while (!args[0].equals("")) ;
+         QueryProcessor queryProcessor = new QueryProcessor(args[0]);
+        getDocuments(queryProcessor,args[0]);
+        long endTime = System.nanoTime();
+        long totalTime = endTime - startTime;
+        System.out.println("Total execution time: " + totalTime / 1000000000 + "sec.");
     }
 
-*/
-    }
 
-    public static void getDocuments() {
+    public static void getDocuments(QueryProcessor queryProcessor, String arg) {
 
         final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://woodymats.digital:3001/api/")
@@ -53,7 +42,12 @@ public class Main {
                 if (code == 200) {
                     Type type = new TypeToken<HashSet<TFD>>(){}.getType();
                     documentsHashSet = new Gson().fromJson(response.body(), type);
-                    printDocumentsHashSet();
+                    do {
+                        if (!arg.equals("")) {
+                            double[] results = queryProcessor.CalculateResults(documentsHashSet);
+                            System.out.println("Final cosine similarity ");
+                            System.out.println(Arrays.toString(results));}
+                    }while (!arg.equals("")) ;
                 } else {
                     System.out.println("Error with code: " + code);
                 }

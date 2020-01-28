@@ -41,10 +41,7 @@ public class QueryProcessor {
     conn.close();
 }
 */
-    double [] CalculateResults()  {
-       /* for (TFD tfd:set){
-        words.add(tfd.getText());
-        }*/
+    double [] CalculateResults(HashSet<TFD> documentsHashSet)  {
         TfIdfCalc tfidfcalc=new TfIdfCalc();
         int i=0,j=0,k=0,n=0;
         tf=new double[words.size()][docNum];
