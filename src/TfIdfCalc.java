@@ -10,11 +10,8 @@ class TfIdfCalc {
         for (TFD tfd:links) {
             if (tfd.getDocumentId().equals(id)){
         if (tfd.getTextTerm().equals(str)){
-          freq++;
+          freq+=tfd.getTermFrequency();
         }}}
-        if (freq==0){
-            return 0.0;
-        }
         return (freq/links.size());
     }
 
