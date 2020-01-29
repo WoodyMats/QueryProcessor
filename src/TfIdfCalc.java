@@ -7,12 +7,17 @@ class TfIdfCalc {
      double tfCalculator(String str, String id, HashSet<TFD> links)
      {
         double freq=0;
+        double maxl=0;
         for (TFD tfd:links) {
             if (tfd.getDocumentId().equals(id)){
+                maxl++;
         if (tfd.getTextTerm().equals(str)){
           freq+=tfd.getTermFrequency();
         }}}
-        return (freq/links.size());
+        if (maxl==0 && freq==0){
+            return 0.0;
+        }
+        return (freq/maxl);
     }
 
 
