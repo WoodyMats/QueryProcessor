@@ -1,3 +1,5 @@
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashSet;
 
 public class QueryProcessor {
@@ -39,11 +41,11 @@ public class QueryProcessor {
         for (String word: words){
             for (String id:docId) {
                 double Tf = tfidfcalc.tfCalculator(word,id, documentsHashSet);
+                double Idf = tfidfcalc.idfCalculator(word,id,documentsHashSet);
                 tf[i][j] = Tf;
+                idf[i] = Idf;
                 j++;
             }
-            double Idf = tfidfcalc.idfCalculator(word,documentsHashSet);
-            idf[i] = Idf;
             i++;
             j=0;
         }
@@ -63,12 +65,23 @@ public class QueryProcessor {
         }
 
         HashSet<TFD> temp=calculateTermTFD();
-        for (String str:termToSearch){
-            for (String s:docId){
-            double termTf=tfidfcalc.tfCalculator(str,s,temp);
-            double termIdf=tfidfcalc.idfCalculator(str,temp);
+        for (TFD tfd:temp){
+            double termTf;
+            double termIdf;
+            double sumTermFreq=findSumTermFreq(tfd.getTextTerm(),documentsHashSet);
+            if (sumTermFreq!=0){
+                termTf=tfd.getTermFrequency()/temp.size();
+            }else{
+                termTf=0.0;
+            }
+            double numOfDocWithTerm=findNumOfDocWithTerm(tfd.getTextTerm(),documentsHashSet);
+            if (numOfDocWithTerm!=0){
+            termIdf=1+Math.log(temp.size()/numOfDocWithTerm);
+            }else{
+               termIdf=0.0;
+            }
             termTfIdf[n]=termTf*termIdf;
-        } n++;}
+         n++;}
 
         CosineSimilarityCalc cosineSimilarityCalc=new CosineSimilarityCalc();
         double[] tempAr=new double[tfIdf.length];
@@ -79,7 +92,37 @@ public class QueryProcessor {
             }
             cos[g]=cosineSimilarityCalc.calc(tempAr,termTfIdf);
         }
+        System.out.println("Size is "+tf.length+" "+tf[0].length+" idf is "+idf.length+" tfidf is "+tfIdf.length+" "+tfIdf[0].length+" term tf idf is "+termTfIdf.length);
+        System.out.println("TF is ");
+        System.out.println(Arrays.deepToString(tf));
+        System.out.println("IDF is ");
+        System.out.println(Arrays.toString(idf));
+        System.out.println("TFIDF is ");
+        System.out.println(Arrays.deepToString(tfIdf));
+        System.out.println("Term tfidf is ");
+        System.out.println(Arrays.toString(termTfIdf));
         return cos;
+    }
+
+    double findSumTermFreq(String term,HashSet<TFD> hash){
+        int sum=0;
+        for (TFD tfd:hash){
+            if (tfd.getTextTerm().equals(term)){
+                sum+=tfd.getTermFrequency();
+            }
+        }
+        return sum;
+    }
+
+
+    double findNumOfDocWithTerm(String term,HashSet<TFD> hash){
+        int count=0;
+        for (TFD tfd:hash){
+            if (tfd.getTextTerm().equals(term)){
+                count++;
+            }
+        }
+        return count;
     }
 
     int findPosition(String text,HashSet<String> set){

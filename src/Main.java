@@ -19,8 +19,8 @@ public class Main {
 
     public static void main(String[] args) {
         long startTime = System.nanoTime();
-         QueryProcessor queryProcessor = new QueryProcessor("google google index safety safety index index index ");
-        getDocuments(queryProcessor,"google google index safety safetyindex index index");
+         QueryProcessor queryProcessor = new QueryProcessor("google add ad added address adjust adjusting ads adsense after agree ");
+        getDocuments(queryProcessor);
 
         long endTime = System.nanoTime();
         long totalTime = endTime - startTime;
@@ -28,7 +28,7 @@ public class Main {
     }
 
 
-    public static void getDocuments(QueryProcessor queryProcessor, String arg) {
+    public static void getDocuments(QueryProcessor queryProcessor) {
 
         final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://woodymats.digital:3001/api/")

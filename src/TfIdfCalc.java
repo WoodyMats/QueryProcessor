@@ -21,17 +21,17 @@ class TfIdfCalc {
     }
 
 
-    double idfCalculator( String str, HashSet<TFD> links) {
+    double idfCalculator( String str,String id, HashSet<TFD> links) {
     double count=0;
         for (TFD tfd:links){
-            if (tfd.getTextTerm().equals(str)){
+            if (tfd.getDocumentId().equals(id) &&(tfd.getTextTerm().equals(str))){
                 count++;
             }
         }
         if (count==0){
             return 0.0;
         }
-            return  Math.log(links.size()/count);
+            return  1+Math.log(links.size()/count);
 
     }
 
