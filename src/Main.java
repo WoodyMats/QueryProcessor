@@ -15,11 +15,13 @@ import java.util.HashSet;
 
 public class Main {
     public static HashSet<TFD> documentsHashSet = new HashSet<>();
+    private static  HashSet<String> words=new HashSet<>();
 
     public static void main(String[] args) {
         long startTime = System.nanoTime();
-         QueryProcessor queryProcessor = new QueryProcessor(args[0]);
-        getDocuments(queryProcessor,args[0]);
+         QueryProcessor queryProcessor = new QueryProcessor("google google index safety safety index index index ");
+        getDocuments(queryProcessor,"google google index safety safetyindex index index");
+
         long endTime = System.nanoTime();
         long totalTime = endTime - startTime;
         System.out.println("Total execution time: " + totalTime / 1000000000 + "sec.");
@@ -42,26 +44,28 @@ public class Main {
                 if (code == 200) {
                     Type type = new TypeToken<HashSet<TFD>>(){}.getType();
                     documentsHashSet = new Gson().fromJson(response.body(), type);
-                    do {
-                        if (!arg.equals("")) {
-                            double[] results = queryProcessor.CalculateResults(documentsHashSet);
-                            System.out.println("Final cosine similarity ");
-                            System.out.println(Arrays.toString(results));}
-                    }while (!arg.equals("")) ;
+                    createSets();
+                    double[] results = queryProcessor.CalculateResults(documentsHashSet,words);
+                    System.out.println("Final cosine similarity ");
+                    System.out.println(Arrays.toString(results));
+                    System.exit(0);
                 } else {
                     System.out.println("Error with code: " + code);
                 }
+
             }
 
             @Override
             public void onFailure(Call<JsonArray> call, Throwable throwable) {
             }
         });
+
     }
 
-    public static void printDocumentsHashSet() {
-        for (TFD h : documentsHashSet) {
-            System.out.println(h.getTextTerm());
+
+    public static void createSets(){
+        for (TFD tfd:documentsHashSet){
+            words.add(tfd.getTextTerm());
         }
     }
 

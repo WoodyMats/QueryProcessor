@@ -1,4 +1,3 @@
-import java.sql.*;
 import java.util.HashSet;
 
 public class QueryProcessor {
@@ -6,9 +5,16 @@ public class QueryProcessor {
     double [][] tf;
     double [] idf,cos,termTfIdf;
     String [] termToSearch;
-    HashSet<String> words;
-    HashSet<HashSet<TFD>> set;
-    private int docNum;
+    HashSet<HashSet<TFD>> set=new HashSet<>();
+
+    public HashSet<String> getDocNum() {
+        return docNum;
+    }
+
+    HashSet<String> docNum;
+    HashSet<String> docId=new HashSet<>();
+
+
 
 
 
@@ -17,31 +23,10 @@ public class QueryProcessor {
        termToSearch =search.split(" ");
     }
 
- /*void getDataDb() throws ClassNotFoundException, SQLException {
-    String myDriver = "com.mysql.jdbc.Driver";
-    String myUrl = "jdbc:mysql://159.203.191.150:3306/SearchEngineDb";
-    Class.forName(myDriver);
-    Connection conn = DriverManager.getConnection(myUrl, "test", "test");
-     String wordsQuery = "select * from records";
-     String docNumQuery="select count(distinct(link)) from records";
-     PreparedStatement preparedStatement=conn.prepareStatement(wordsQuery);
-     PreparedStatement preparedStatement1=conn.prepareStatement(docNumQuery);
-     preparedStatement1.execute();
-     ResultSet resultSet1=preparedStatement1.executeQuery();
-     docNum=resultSet1.getInt(1);
-    ResultSet resultSet=preparedStatement.executeQuery();
-    TFD tfd;
-    while (resultSet.next()){
-        tfd=new TFD();
-        tfd.setText(resultSet.getString(1));
-        tfd.setDoc_id(resultSet.getString(2));
-        tfd.setFreq(resultSet.getInt(3));
-        set.add(tfd);
-    }
-    conn.close();
-}
-*/
-    double [] CalculateResults(HashSet<TFD> documentsHashSet)  {
+
+    double [] CalculateResults(HashSet<TFD> documentsHashSet, HashSet<String> words)  {
+        int docNum=findDocNum(documentsHashSet);
+        docId=getDocNum();
         TfIdfCalc tfidfcalc=new TfIdfCalc();
         int i=0,j=0,k=0,n=0;
         tf=new double[words.size()][docNum];
@@ -51,20 +36,20 @@ public class QueryProcessor {
         termTfIdf=new double[termToSearch.length];
 
         //Calculate tf,idf arrays
-        for (String word:words){
-            for (HashSet<TFD> m:set){
-            double Tf=tfidfcalc.tfCalculator(word,m);
-            double Idf=tfidfcalc.idfCalculator(word,m);
-            tf[i][j]=Tf;
-            idf[i]=Idf;
-            j++;
-        }
+        for (String word: words){
+            for (String id:docId) {
+                double Tf = tfidfcalc.tfCalculator(word,id, documentsHashSet);
+                tf[i][j] = Tf;
+                j++;
+            }
+            double Idf = tfidfcalc.idfCalculator(word,documentsHashSet);
+            idf[i] = Idf;
             i++;
             j=0;
         }
 
         for (String s:termToSearch){
-            int pos=findPosition(s,words);
+            int pos=findPosition(s, words);
             for (int l=0;l<docNum;l++){
                 if (pos!=-1){
                 double v1=tf[pos][l];
@@ -79,11 +64,11 @@ public class QueryProcessor {
 
         HashSet<TFD> temp=calculateTermTFD();
         for (String str:termToSearch){
-            double termTf=tfidfcalc.tfCalculator(str,temp);
+            for (String s:docId){
+            double termTf=tfidfcalc.tfCalculator(str,s,temp);
             double termIdf=tfidfcalc.idfCalculator(str,temp);
             termTfIdf[n]=termTf*termIdf;
-            n++;
-        }
+        } n++;}
 
         CosineSimilarityCalc cosineSimilarityCalc=new CosineSimilarityCalc();
         double[] tempAr=new double[tfIdf.length];
@@ -138,6 +123,14 @@ public class QueryProcessor {
         }
         return bool;
 }
+
+public int findDocNum(HashSet<TFD> hash){
+        docNum=new HashSet<>();
+        for (TFD tfd:hash){
+            docNum.add(tfd.getDocumentId());
+        }
+        return docNum.size();
+    }
 
 
 }
