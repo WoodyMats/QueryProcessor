@@ -19,7 +19,7 @@ public class Main {
 
     public static void main(String[] args) {
         long startTime = System.nanoTime();
-         QueryProcessor queryProcessor = new QueryProcessor("google add ad added address adjust adjusting ads adsense after agree ");
+         QueryProcessor queryProcessor = new QueryProcessor("google google add ad added address adjust adjusting ads adsense after agree age alerts ahead you're youtube");
         getDocuments(queryProcessor);
 
         long endTime = System.nanoTime();

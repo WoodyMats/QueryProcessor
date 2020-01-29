@@ -7,7 +7,7 @@ public class QueryProcessor {
     double [][] tf;
     double [] idf,cos,termTfIdf;
     String [] termToSearch;
-    HashSet<HashSet<TFD>> set=new HashSet<>();
+
 
     public HashSet<String> getDocNum() {
         return docNum;
@@ -70,7 +70,7 @@ public class QueryProcessor {
             double termIdf;
             double sumTermFreq=findSumTermFreq(tfd.getTextTerm(),documentsHashSet);
             if (sumTermFreq!=0){
-                termTf=tfd.getTermFrequency()/temp.size();
+                termTf=(double)tfd.getTermFrequency()/temp.size();
             }else{
                 termTf=0.0;
             }
