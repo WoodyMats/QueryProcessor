@@ -1,6 +1,10 @@
 import java.util.HashSet;
 
-
+/**
+ * Κλάση για τον υπολογισμό του TF και IDF.
+ * @author Matskidis Ioannis
+ * @author Moutafidis Dimitrios
+ */
 class TfIdfCalc {
 
 

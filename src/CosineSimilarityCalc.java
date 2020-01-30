@@ -1,3 +1,9 @@
+/**
+ * Κλάση για τον υπολογισμό του Cosine Similarity.
+ * @author Matskidis Ioannis
+ * @author Moutafidis Dimitrios
+ */
+
 public class CosineSimilarityCalc {
     double  calc(double [] tfIdf,double [] termTfIdf){
         double dotProduct = 0.0;

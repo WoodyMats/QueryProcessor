@@ -1,3 +1,9 @@
+/**
+ * Κλάση η οποία υλοποιεί τις εγγραφές που υπάρχουν στη βάση.
+ * @author Matskidis Ioannis
+ * @author Moutafidis Dimitrios
+ */
+
 class TFD {
 
     String textTerm, documentId;
@@ -8,16 +14,8 @@ class TFD {
         return textTerm;
     }
 
-    public void setTextTerm(String textTerm) {
-        this.textTerm = textTerm;
-    }
-
     public String getDocumentId() {
         return documentId;
-    }
-
-    public void setDocumentId(String documentId) {
-        this.documentId = documentId;
     }
 
     public int getTermFrequency() {

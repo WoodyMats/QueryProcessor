@@ -1,37 +1,50 @@
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.HashSet;
 
+
+/**
+ * Η κλάση αυτή επεξεργάζεται το ερώτημα του χρήστη και κάνοντας επιστρέφει τα σκορ
+ * για το ερώτημα με βάση τις εγγραφές που υπάρχουν στη βάση και τις
+ * οποίες κάναμε crawling.
+ * @author Matskidis Ioannis
+ * @author Moutafidis Dimitrios
+ */
 public class QueryProcessor {
-    double [][] tfIdf;//tf idf weights array
-    double [][] tf;
-    double [] idf,cos,termTfIdf;
-    String [] termToSearch;
+    double [][] tfIdf;//TFIDF πίνακας όπου περιέχει τις αντίστοιχες εγγραφές TF*IDF.
+    double [][] tf;//TF πίνακας.
+    double [] idf,cos,termTfIdf;//Πίνακες με τις τιμές IDF,Cosine Similarity και TF*IDF για τους όρους του χρήστη αντίστοιχα.
+    String [] termToSearch;//Πίνακας όπου θα περιέχει όλες τις μοναδικές λέξεις του ερωτήματος του χρήστη.
+    HashSet<String> docSet;//HashSet περιέχει όλα τα λινκ.
 
 
+    /**
+     * Μέθοδος που επιστρέφει τα λινκ τα οποία υπάρχουν στη βάση.
+     * @return HashSet με λινκ.
+     */
     public HashSet<String> getDocNum() {
-        return docNum;
+        return docSet;
     }
 
-    HashSet<String> docNum;
-    HashSet<String> docId=new HashSet<>();
-
-
-
-
-
-
+    /**
+     * Constructor που κάνει πίνακα την είσοδο του χρήστη.
+     * @param search Είσοδος χρήστη.
+     */
     QueryProcessor(String search)  {
        termToSearch =search.split(" ");
     }
 
 
+    /**
+     * Σε αυτή τη μέθοδο υπολογίζονται οι πίνακες TF,IDF,TF*IDF,TermTFIDF και
+     * Cosine Similarity όπου o τελευταίος επιστρέφεται στο σημείο όπου θα κληθεί.
+     * @param documentsHashSet HashSet με όλες τις εγραφές της βάσης.
+     * @param words HashSet με όλες τις λέξεις που περιέχει η βάση.
+     * @return Επιστρέφει πίνακα με Cosine Similarity.
+     */
     double [] CalculateResults(HashSet<TFD> documentsHashSet, HashSet<String> words)  {
         int docNum=findDocNum(documentsHashSet);
         int i=0,j=0,k=0,n=0;
-        docId=getDocNum();
+        docSet=getDocNum();
         TfIdfCalc tfidfcalc=new TfIdfCalc();
-System.out.println(documentsHashSet.size());
         tf=new double[words.size()][docNum];
         tfIdf=new double[termToSearch.length][docNum];
         idf=new double[words.size()];
@@ -40,7 +53,7 @@ System.out.println(documentsHashSet.size());
 
         //Calculate tf,idf arrays
         for (String word: words){
-            for (String id:docId) {
+            for (String id:docSet) {
                 double Tf = tfidfcalc.tfCalculator(word,id, documentsHashSet);
                 double Idf = tfidfcalc.idfCalculator(word,id,documentsHashSet);
                 tf[i][j] = Tf;
@@ -93,18 +106,15 @@ System.out.println(documentsHashSet.size());
             }
             cos[g]=cosineSimilarityCalc.calc(tempAr,termTfIdf);
         }
-//        System.out.println("tf is "+tf.length+" "+tf[0].length+" idf is "+idf.length+" tfidf is "+tfIdf.length+" "+tfIdf[0].length+" term tf idf is "+termTfIdf.length);
-//        System.out.println("TF is ");
-//        System.out.println(Arrays.deepToString(tf));
-//        System.out.println("IDF is ");
-//        System.out.println(Arrays.toString(idf));
-//        System.out.println("TFIDF is ");
-//        System.out.println(Arrays.deepToString(tfIdf));
-//        System.out.println("Term tfidf is ");
-//        System.out.println(Arrays.toString(termTfIdf));
         return cos;
     }
 
+    /**
+     * Βρίσκει και επιστρέφει το άθροισμα των συχνοτήτων εμφάνισης της λέξης term.
+     * @param term Η λέξη η οποία θέλουμε να αναζητήσουμε τη συχνότητα.
+     * @param hash Το σύνολο των δεδομένων της βάσης.
+     * @return Τον αριθμό εμφάνισης της λέξης σε όλο το σύνολο των δεδομένων.
+     */
     double findSumTermFreq(String term,HashSet<TFD> hash){
         int sum=0;
         for (TFD tfd:hash){
@@ -116,6 +126,12 @@ System.out.println(documentsHashSet.size());
     }
 
 
+    /**
+     * Βρίσκει και επιστρέφει σε πόσα έγγραφα(λινκ) βρέθηκε η λέξη term.
+     * @param term Η λέξη η οποία θέλουμε να αναζητήσουμε τη συχνότητα.
+     * @param hash Το σύνολο των δεδομένων της βάσης.
+     * @return Τον αριθμό των εγγράφων στα οποία βρέθηκε η λέξη.
+     */
     double findNumOfDocWithTerm(String term,HashSet<TFD> hash){
         int count=0;
         for (TFD tfd:hash){
@@ -126,6 +142,13 @@ System.out.println(documentsHashSet.size());
         return count;
     }
 
+    /**
+     * Η μέθοδος αυτή βρίσκει για τη λέξη text σε ποιά θέση του HashSet
+     * βρίσκεται και την επιστρέφει.Εάν δεν βρεθεί επιστρέφει -1.
+     * @param text Η λέξη για την οποία θέλουμε να βρούμε τη θέση της.
+     * @param set Το σύνολο των δεδομένων.
+     * @return Τη θέση που βρέθηκε το στοιχείο αλλιώς -1.
+     */
     int findPosition(String text,HashSet<String> set){
         int pos=0;
         if (set.contains(text)){
@@ -142,6 +165,10 @@ System.out.println(documentsHashSet.size());
         return -1;
     }
 
+    /**
+     *Η μέθοδος υπολογίζει για τους όρους που κάνει ο χρήστης την αναζήτηση τα δεδομένα (t,d,f).
+     * @return HashSet με τις εγγραφές απο την είσοδο του χρήστη.
+     */
      HashSet<TFD> calculateTermTFD() {
         HashSet<TFD> termTfIdf=new HashSet<>();
         for (String x:termToSearch){
@@ -157,6 +184,14 @@ System.out.println(documentsHashSet.size());
         return termTfIdf;
     }
 
+    /**
+     * Η μέθοδος ελέγχει εάν υπάρχει το στοιχείο x και επιστρέφει αντίστοιχα
+     * το αποτέλεσμα (true or false) αυξάνοντας ταυτόχρονα τη συχνότητα εμφάνισης
+     * εφόσον η λέξη υπάρχει ήδη.
+     * @param x Η λέξη που θέλουμε να αναζητήσουμε εάν υπάρχει.
+     * @param termTfIdf HashSet με το σύνολο των δεδομένων.
+     * @return True εάν το στοιχείο βρέθηκε false σε αντίθετη περίπτωση.
+     */
     private boolean checkIfExists(String x, HashSet<TFD> termTfIdf) {
         boolean bool=false;
         for (TFD tfd : termTfIdf) {
@@ -168,12 +203,18 @@ System.out.println(documentsHashSet.size());
         return bool;
 }
 
-public int findDocNum(HashSet<TFD> hash){
-        docNum=new HashSet<>();
+    /**
+     * Η μέθοδος αυτή συλλέγει όλα τα λινκ απο το σύνολο των δεδομένων και
+     * επίσης επιστρέφει πόσα μοναδικά λινκ υπάρχουν στη βάση.
+     * @param hash Το σύνολο των δεδομένων της βάσης.
+     * @return Επιστρέφει το πλήθος των λινκ.
+     */
+    public int findDocNum(HashSet<TFD> hash){
+        docSet=new HashSet<>();
         for (TFD tfd:hash){
-            docNum.add(tfd.getDocumentId());
+            docSet.add(tfd.getDocumentId());
         }
-        return docNum.size();
+        return docSet.size();
     }
 
 
