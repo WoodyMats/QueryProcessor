@@ -23,12 +23,8 @@ public class Main {
 
     public static void main(String[] args) {
         long startTime = System.nanoTime();
-
         QueryProcessor queryProcessor = new QueryProcessor(args[0]);
-
-
         getDocuments(queryProcessor,startTime);
-
     }
 
 
