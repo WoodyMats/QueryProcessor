@@ -19,16 +19,13 @@ public class Main {
 
     public static void main(String[] args) {
         long startTime = System.nanoTime();
-         QueryProcessor queryProcessor = new QueryProcessor("google google add ad added address adjust adjusting ads adsense after agree age alerts ahead you're youtube");
-        getDocuments(queryProcessor);
+        QueryProcessor queryProcessor = new QueryProcessor(args[0]);
+        getDocuments(queryProcessor,startTime);
 
-        long endTime = System.nanoTime();
-        long totalTime = endTime - startTime;
-        System.out.println("Total execution time: " + totalTime / 1000000000 + "sec.");
     }
 
 
-    public static void getDocuments(QueryProcessor queryProcessor) {
+    public static void getDocuments(QueryProcessor queryProcessor,long startTime) {
 
         final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://woodymats.digital:3001/api/")
@@ -48,6 +45,10 @@ public class Main {
                     double[] results = queryProcessor.CalculateResults(documentsHashSet,words);
                     System.out.println("Final cosine similarity ");
                     System.out.println(Arrays.toString(results));
+
+                    long endTime = System.nanoTime();
+                    long totalTime = endTime - startTime;
+                    System.out.println("Total execution time: " + totalTime / 1000000000 + "sec.");
                     System.exit(0);
                 } else {
                     System.out.println("Error with code: " + code);

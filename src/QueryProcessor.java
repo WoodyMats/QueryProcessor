@@ -28,9 +28,10 @@ public class QueryProcessor {
 
     double [] CalculateResults(HashSet<TFD> documentsHashSet, HashSet<String> words)  {
         int docNum=findDocNum(documentsHashSet);
+        int i=0,j=0,k=0,n=0;
         docId=getDocNum();
         TfIdfCalc tfidfcalc=new TfIdfCalc();
-        int i=0,j=0,k=0,n=0;
+System.out.println(documentsHashSet.size());
         tf=new double[words.size()][docNum];
         tfIdf=new double[termToSearch.length][docNum];
         idf=new double[words.size()];
@@ -92,7 +93,7 @@ public class QueryProcessor {
             }
             cos[g]=cosineSimilarityCalc.calc(tempAr,termTfIdf);
         }
-        System.out.println("Size is "+tf.length+" "+tf[0].length+" idf is "+idf.length+" tfidf is "+tfIdf.length+" "+tfIdf[0].length+" term tf idf is "+termTfIdf.length);
+        System.out.println("tf is "+tf.length+" "+tf[0].length+" idf is "+idf.length+" tfidf is "+tfIdf.length+" "+tfIdf[0].length+" term tf idf is "+termTfIdf.length);
         System.out.println("TF is ");
         System.out.println(Arrays.deepToString(tf));
         System.out.println("IDF is ");
