@@ -21,6 +21,7 @@ public class Main {
     private static  HashSet<String> words=new HashSet<>();
     private static HashSet<String> links=new HashSet<>();
 
+
     public static void main(String[] args) {
         long startTime = System.nanoTime();
         QueryProcessor queryProcessor = new QueryProcessor(args[0]);
@@ -57,8 +58,9 @@ public class Main {
                     Map<String, Double> sorted = finalCosSim
                             .entrySet()
                             .stream()
-                            .sorted(comparingByValue())
-                            .collect(toMap(e -> e.getKey(), e -> e.getValue(), (e1, e2) ->e2,
+                            .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                            .collect(
+                                    toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,
                                             LinkedHashMap::new));
                     System.out.println(sorted);
                     long endTime = System.nanoTime();
@@ -77,7 +79,6 @@ public class Main {
         });
 
     }
-
 
     public static void createSets(){
         for (TFD tfd:documentsHashSet){
