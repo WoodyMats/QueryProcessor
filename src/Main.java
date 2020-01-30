@@ -9,17 +9,24 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.lang.reflect.Type;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.*;
+import java.util.zip.DeflaterOutputStream;
+
+import static java.util.Map.Entry.comparingByValue;
+import static java.util.stream.Collectors.toMap;
 
 
 public class Main {
     public static HashSet<TFD> documentsHashSet = new HashSet<>();
     private static  HashSet<String> words=new HashSet<>();
+    private static HashSet<String> links=new HashSet<>();
 
     public static void main(String[] args) {
         long startTime = System.nanoTime();
+
         QueryProcessor queryProcessor = new QueryProcessor(args[0]);
+
+
         getDocuments(queryProcessor,startTime);
 
     }
@@ -44,8 +51,20 @@ public class Main {
                     createSets();
                     double[] results = queryProcessor.CalculateResults(documentsHashSet,words);
                     System.out.println("Final cosine similarity ");
-                    System.out.println(Arrays.toString(results));
-
+                    links=queryProcessor.docNum;
+                    HashMap<String,Double> finalCosSim=new HashMap<>();
+                    int i=0;
+                    for (String s:links){
+                            finalCosSim.put(s,results[i]);
+                            i++;
+                        }
+                    Map<String, Double> sorted = finalCosSim
+                            .entrySet()
+                            .stream()
+                            .sorted(comparingByValue())
+                            .collect(toMap(e -> e.getKey(), e -> e.getValue(), (e1, e2) ->e2,
+                                            LinkedHashMap::new));
+                    System.out.println(sorted);
                     long endTime = System.nanoTime();
                     long totalTime = endTime - startTime;
                     System.out.println("Total execution time: " + totalTime / 1000000000 + "sec.");

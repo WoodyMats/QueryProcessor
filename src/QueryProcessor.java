@@ -93,15 +93,15 @@ System.out.println(documentsHashSet.size());
             }
             cos[g]=cosineSimilarityCalc.calc(tempAr,termTfIdf);
         }
-        System.out.println("tf is "+tf.length+" "+tf[0].length+" idf is "+idf.length+" tfidf is "+tfIdf.length+" "+tfIdf[0].length+" term tf idf is "+termTfIdf.length);
-        System.out.println("TF is ");
-        System.out.println(Arrays.deepToString(tf));
-        System.out.println("IDF is ");
-        System.out.println(Arrays.toString(idf));
-        System.out.println("TFIDF is ");
-        System.out.println(Arrays.deepToString(tfIdf));
-        System.out.println("Term tfidf is ");
-        System.out.println(Arrays.toString(termTfIdf));
+//        System.out.println("tf is "+tf.length+" "+tf[0].length+" idf is "+idf.length+" tfidf is "+tfIdf.length+" "+tfIdf[0].length+" term tf idf is "+termTfIdf.length);
+//        System.out.println("TF is ");
+//        System.out.println(Arrays.deepToString(tf));
+//        System.out.println("IDF is ");
+//        System.out.println(Arrays.toString(idf));
+//        System.out.println("TFIDF is ");
+//        System.out.println(Arrays.deepToString(tfIdf));
+//        System.out.println("Term tfidf is ");
+//        System.out.println(Arrays.toString(termTfIdf));
         return cos;
     }
 
