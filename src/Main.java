@@ -83,7 +83,11 @@ public class Main {
                         result.setRank(sorted.get(url));
                         list.add(result);
                     }
-                    System.out.println(new Gson().toJson(list, ArrayList.class));
+                    if (list.size()==0){
+                        System.out.println("Results Not Found..");
+                    }else {
+                        System.out.println(new Gson().toJson(list, ArrayList.class));
+                    }
                     System.exit(0);
                 } else {
                     System.out.println("Error with code: " + code);
