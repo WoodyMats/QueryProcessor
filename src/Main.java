@@ -76,17 +76,11 @@ public class Main {
                         }
                     }
 
-                    ArrayList<Result> list = new ArrayList<>();
-                    for (String url : sorted.keySet()) {
-                        Result result = new Result();
-                        result.setUrl(url);
-                        result.setRank(sorted.get(url));
-                        list.add(result);
-                    }
-                    if (list.size()==0){
+                    if (sorted.size()==0){
                         System.out.println("Results Not Found..");
                     }else {
-                        System.out.println(new Gson().toJson(list, ArrayList.class));
+                        for (Map.Entry<String,Double> entry:sorted.entrySet())
+                        System.out.println("Url is "+entry.getKey()+" and rank is "+entry.getValue());
                     }
                     System.exit(0);
                 } else {
