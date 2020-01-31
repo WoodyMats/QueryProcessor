@@ -29,7 +29,8 @@ public class QueryProcessor {
      * @param search Είσοδος χρήστη.
      */
     QueryProcessor(String search)  {
-       termToSearch =search.split(" ");
+
+        termToSearch =search.toLowerCase().split(" ");
     }
 
 
